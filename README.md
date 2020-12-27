@@ -45,20 +45,54 @@ pip3 install -r requirements.txt
 
 # 放到GCE上，連入測試安裝可行性
 
+使用Debian image
+
 ```
 sudo apt-get install -y python3-pip
+sudo apt-get install -y git 
 git clone https://github.com/BingHongLi/gcp-basic-demo.git
 cd gcp-basic-demo
 pip3 install -r requirements.txt
 python3 step4_integrate_both.py
 ```
 
-# 嘗試使用 開機腳本
+# 使用docker
+
+連入，並安裝docker
 
 ```
-apt-get install -y python3-pip
+sudo apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/debian \
+   $(lsb_release -cs) \
+   stable"
+
+sudo apt-get update
+
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+
+sudo usermod -aG docker $USER
+
 git clone https://github.com/BingHongLi/gcp-basic-demo.git
+
+'''
+
+因為安裝docker，故必須重新登入
+
+'''
+
 cd gcp-basic-demo
-pip3 install -r requirements.txt
-python3 step4_integrate_both.py
+
+docker build -t flask-gcp-gs .
+
+docker run -p 80:8081  -d flask-gcp-gs
+
 ```
